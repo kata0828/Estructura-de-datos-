@@ -1,0 +1,52 @@
+# Taller 02 - Ejercicio 1 - Los planetas
+module Taller02
+  VERSION = "0.1.0"
+  CONSTANTE_GRAVITACION_UNIVERSAL = 6.674E-11
+
+  # Escriba aquí la clase Planeta
+class Planeta
+  @nombre : String
+  @masa : Float64
+  @radio : Float64
+  @volumen : Float64
+  @distancia_sol : Float64
+  @tipo_planeta : String
+  @observable : Bool
+
+  G = 6.674e-11
+ getter nombre
+ getter masa
+ getter radio  
+ getter volumen
+ getter distancia_sol
+ getter tipo_planeta
+ getter observable
+
+ def initialize(@nombre, @masa, @radio, @distancia_sol, @tipo_planeta, @observable)
+ end
+ def externo? : Bool
+   @tipo_planeta (limite : Float64) Bool
+     if @distancia_sol > limite
+       return true
+     else
+       return false
+     end
+   end
+  def gravedad : Float64
+    G * @masa / (@radio ** 2)
+  else
+    1.0
+  end
+
+
+
+
+
+  def initialize(@nombre, @masa, @radio)
+  end
+  # Getters
+  getter nombre
+  getter masa
+  getter radio
+  
+end # Fin del módulo
