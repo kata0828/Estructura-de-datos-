@@ -1,0 +1,82 @@
+#TALLER 6#
+# Módulos requeridos para trabajar con nodos
+require "dataclass"
+require "nodo"
+
+# Aquí se define la clase Departamento
+require "departamento"
+
+# Vamos a incluir la definición de la clase Departamento
+include Eanlib::Data
+# Vamos a incluir los nodos de objetos de la clase Departamento
+include Eanlib::Nodo(Departamento)
+
+# ---------------------------------------
+# La Dataclass País
+# ---------------------------------------
+dataclass Pais{ cabeza : Nodo(Departamento) = nulo } do
+
+    def num_deptos : Int32
+        cont = 0
+        actual = cabeza
+        while actual != nulo
+            cont += 1 
+            actual = actual.siguiente
+        end
+        return cont
+    end
+
+    def metodo01 : Int 32
+        c = 0
+        act = cabeza
+        while act != nulo
+            d = act.info
+            if d.region_caribe? == true
+                c = c +1 
+            end
+            act = act.siguiente
+        end
+        return c 
+    end
+  def metodo05 (letra : char) : Int32
+    c = 0
+    q = cabeza 
+    untiL q == nulo 
+      x = q.info
+      if 20_000 <= x.superficie <= 90_000 
+        x.nombre.starts_with?(letra) &&
+        !x.capital.ends_with("a") &&
+        !x.capital.ends_with("e") &&
+        !x.capital.ends_with("i") &&
+        !x.capital.ends_with("o") &&
+        !x.capital.ends_with("u") 
+        c = c +1
+      end
+      q = q.siguente
+  end 
+  retrn c
+  end 
+  def metodo06 : Int32
+    suma = 0
+    q = cabeza 
+    until q.es_nulo?
+      y = q.info #guadamos la variable en y#
+      if y.region == "Carible" && (2025-y.año) >50
+        suma = suma + y.superficie #buscar explicacion #
+      end
+    q = q.siguiente
+    end 
+    return suma 
+  end
+  def metodo07 : Int32
+    suma = 0
+    p = cabeza 
+    until p.es_nulo?
+      t = p.info
+      if 
+
+  end 
+  def metodo09 : #por%# de hombres 
+  end 
+  def metodo10 :# promedio edad hombres# 
+end
