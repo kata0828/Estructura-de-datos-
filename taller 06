@@ -56,6 +56,21 @@ dataclass Pais{ cabeza : Nodo(Departamento) = nulo } do
   end 
   retrn c
   end 
+def metodo05(letra : Char) : Int32
+  c = 0
+  act = cabeza
+  while act != nulo
+    d = act.info
+    if d.superficie >= 20000 && d.superficie <= 90000 &&
+       d.nombre.starts_with?(letra) &&
+       !"aeiou".includes?(d.capital[-1].downcase)
+      c += 1
+    end
+    act = act.siguiente
+  end
+  return c
+end
+
   def metodo06 : Int32
     suma = 0
     q = cabeza 
@@ -80,3 +95,199 @@ dataclass Pais{ cabeza : Nodo(Departamento) = nulo } do
   end 
   def metodo10 :# promedio edad hombres# 
 end
+
+
+
+# Módulos requeridos para trabajar con nodos
+require "dataclass"
+require "nodo"
+
+# Aquí se define la clase Departamento
+require "departamento"
+
+# Vamos a incluir la definición de la clase Departamento
+include Eanlib::Data
+# Vamos a incluir los nodos de objetos de la clase Departamento
+include Eanlib::Nodo(Departamento)
+
+# ---------------------------------------
+# La Dataclass País
+# ---------------------------------------
+dataclass Pais { cabeza : Nodo(Departamento) = nulo } do
+
+  def num_deptos : Int32
+    cont = 0
+    actual = cabeza
+    while actual != nulo
+      cont += 1
+      actual = actual.siguiente
+    end
+    return cont
+  end
+
+  def metodo01 : Int32
+    c = 0
+    act = cabeza
+    while act != nulo
+      d = act.info
+      c += 1 if d.region_caribe?
+      act = act.siguiente
+    end
+    return c
+  end
+
+  def metodo02 : Int32
+    c = 0
+    act = cabeza
+    while act != nulo
+      d = act.info
+      if "aeiou".includes?(d.nombre[-1]) && d.idh <= 0.79
+        c += 1
+      end
+      act = act.siguiente
+    end
+    return c
+  end
+
+  def metodo03(region : String) : Int32
+    c = 0
+    act = cabeza
+    while act != nulo
+      d = act.info
+      if d.region == region && d.año >= 1800 && d.año <= 1899
+        c += 1
+      end
+      act = act.siguiente
+    end
+    return c
+  end
+
+  def metodo04(opcion : Bool) : Int32
+    c = 0
+    act = cabeza
+    while act != nulo
+      d = act.info
+      len = d.nombre.size
+      if opcion
+        c += 1 if len.even? && d.año >= 1900 && d.año <= 1949 #para que sirve .even? 
+      else
+        c += 1 if len.odd? && d.año >= 1950 && d.año <= 1999 #para que sirve .odd?
+      end
+      act = act.siguiente
+    end
+    return c
+  end
+
+  def metodo05 (letra : Char) : Int32
+    c = 0
+    q = cabeza 
+    untiL q == nulo 
+      x = q.info
+      if 20_000 <= x.superficie <= 90_000 
+        x.nombre.starts_with?(letra) &&
+        !x.capital.ends_with("a") &&
+        !x.capital.ends_with("e") &&
+        !x.capital.ends_with("i") &&
+        !x.capital.ends_with("o") &&
+        !x.capital.ends_with("u") 
+        c = c +1
+      end
+      q = q.siguente
+  end 
+  retrn c
+  end 
+  def metodo06 : Int32
+    suma = 0
+    act = cabeza
+    while act != nulo 
+      y = act.info
+      if d.region_caribe? && (2025 - y.año) > 50
+        suma += y.superficie
+      end
+      act = act.siguiente
+    end
+    return suma
+  end
+
+  def metodo07(indice : Float64) : Int32
+    suma = 0
+    act = cabeza
+    while act != nulo
+      k = act.info
+      if k.idh >= 0.5 && k.idh <= indice &&
+         k.nombre.size >= 5 &&
+         k.año >= 1900 && k.año <= 1999
+        suma += k.poblacion
+      end
+      act = act.siguiente
+    end
+    return suma
+  end
+
+  def metodo08(primera_region : String, segunda_region : String) : Bool # explicacion 
+    suma1 = 0
+    suma2 = 0
+    act = cabeza
+    while act != nulo
+      k = act.info
+      suma1 += k.poblacion if k.region == primera_region
+      suma2 += k.poblacion if k.region == segunda_region
+      act = act.siguiente
+    end
+    return suma1 >= suma2
+  end
+
+  def metodo09 : Float64
+    total = 0
+    cumple = 0
+    act = cabeza
+    while act != nulo
+      d = act.info
+      total += 1
+      if !"AEIOU".includes?(d.nombre[0]) && d.año >= 1900 && d.año <= 1949
+        cumple += 1
+      end
+      act = act.siguiente
+    end
+    return total == 0 ? 0.0 : (cumple * 100.0 / total)
+  end
+
+  def metodo10(siglo_xx : Bool) : Float64
+    suma = 0
+    cont = 0
+    act = cabeza
+    while act != nulo
+      d = act.info
+      if siglo_xx && d.año >= 1900 && d.año <= 1999
+        suma += d.poblacion
+        cont += 1
+      elsif !siglo_xx && (d.año < 1900 || d.año > 1999)
+        suma += d.poblacion
+        cont += 1
+      end
+      act = act.siguiente
+    end
+    return cont == 0 ? 0.0 : (suma / cont)
+  end
+
+  def metodo11 : Int32
+    suma = 0
+    cont = 0
+    act = cabeza
+    while act != nulo
+      suma += act.info.poblacion
+      cont += 1
+      act = act.siguiente
+    end
+    promedio = cont == 0 ? 0 : suma / cont
+    c = 0
+    act = cabeza
+    while act != nulo
+      c += 1 if act.info.poblacion > promedio
+      act = act.siguiente
+    end
+    return c
+  end
+end
+
+
