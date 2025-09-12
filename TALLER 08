@@ -1,0 +1,32 @@
+#  Homework 08
+# Módulos requeridos para trabajar con nodos
+require "dataclass"
+require "nodo"
+
+# Aquí se define la clase Departamento
+require "persona"
+
+
+  # Vamos a incluir la definición de la clase Departamento
+include Eanlib::Data
+# Vamos a incluir los nodos de objetos de la clase Departamento
+include Eanlib::Nodo(Persona)
+
+# ---------------------------------------
+# La Dataclass City: Una ciudad tiene
+# un grupo de personas que viven allí.
+# ---------------------------------------
+dataclass Ciudad { cabeza : Nodo(Persona) } do
+  def ejercicio04(num : Int32) Bool
+    act = cabeza 
+    while act != nulo
+      k = act.info
+      if k.es_mujer? && k.num_hijos == 0 && !k.casa?  && !k.auto? && k.ingresos > num
+        return true 
+      else 
+        act = act.siguiente 
+      end
+    end 
+    return false 
+  end
+end
