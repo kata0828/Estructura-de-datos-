@@ -16,17 +16,125 @@ include Eanlib::Nodo(Persona)
 # La Dataclass City: Una ciudad tiene
 # un grupo de personas que viven allí.
 # ---------------------------------------
+
 dataclass Ciudad { cabeza : Nodo(Persona) } do
-  def ejercicio04(num : Int32) Bool
-    act = cabeza 
+
+  # 🧮 ejercicio01: Calcula el promedio de ingresos de hombres
+  # cuya altura está entre 160 y altura_max, y cuyo peso es ≤ 75 kg.
+  def ejercicio01(altura_max : Int32) : Float64
+    act = cabeza
+    suma = 0.0
+    cont = 0
+    while act != nulo
+      p = act.info
+      if p.sexo == "HOMBRE" && p.altura > 160 && p.altura < altura_max && p.peso <= 75
+        suma += p.ingresos
+        cont += 1
+      end
+      act = act.siguiente
+    end
+    return cont > 0 ? suma / cont : 0.0
+  end
+
+  # 📊 ejercicio02: Promedio de edad de personas de cierto género
+  # nacidas en el siglo XX, con educación primaria/secundaria,
+  # cédula par y nombre con más de 10 letras.
+  def ejercicio02(el_genero : String) : Float64
+    act = cabeza
+    suma = 0
+    cont = 0
+    while act != nulo
+      p = act.info
+      año = p.año_nacimiento
+      if p.sexo == el_genero && año >= 1900 && año < 2000 &&
+         (p.nivel_educativo == "PRIMARIA" || p.nivel_educativo == "SECUNDARIA") &&
+         p.cedula.even? && p.nombre.size > 10
+        suma += p.edad
+        cont += 1
+      end
+      act = act.siguiente
+    end
+    return cont > 0 ? suma.to_f / cont : 0.0
+  end
+
+  # 📏 ejercicio03: Encuentra el nombre de la persona más alta
+  # en un estrato específico, cuyo nombre tiene entre 10 y 15 letras
+  # y que no tiene casa. Retorna nil si no hay coincidencias.
+  def ejercicio03(el_estrato : Int32) : String?
+    act = cabeza
+    max_altura = 0
+    nombre_max = nil
+    while act != nulo
+      p = act.info
+      if p.estrato == el_estrato && !p.casa? &&
+         p.nombre.size >= 10 && p.nombre.size <= 15
+        if p.altura > max_altura
+          max_altura = p.altura
+          nombre_max = p.nombre
+        end
+      end
+      act = act.siguiente
+    end
+    return nombre_max
+  end
+
+  # 👩 ejercicio04: Verifica si existe una mujer sin hijos,
+  # sin casa ni carro, con ingresos mayores a un valor dado.
+  def ejercicio04(num : Int32) : Bool
+    act = cabeza
     while act != nulo
       k = act.info
-      if k.es_mujer? && k.num_hijos == 0 && !k.casa?  && !k.auto? && k.ingresos > num
-        return true 
-      else 
-        act = act.siguiente 
+      if k.es_mujer? && k.num_hijos == 0 && !k.casa? && !k.auto? && k.ingresos > num
+        return true
       end
-    end 
-    return false 
+      act = act.siguiente
+    end
+    return false
   end
+
+  # 🆔 ejercicio05: Busca y retorna el nombre de la persona
+  # con una cédula específica. Retorna nil si no se encuentra.
+  def ejercicio05(cedula : Int32) : String?
+    act = cabeza
+    while act != nulo
+      p = act.info
+      return p.nombre if p.cedula == cedula
+      act = act.siguiente
+    end
+    return nil
+  end
+
+  # 🔤 ejercicio06: Retorna la primera persona entre 20 y 30 años
+  # cuyo nombre comienza con una letra dada. Retorna nil si no hay coincidencias.
+  def ejercicio06(letra : Char) : Persona?
+    act = cabeza
+    while act != nulo
+      p = act.info
+      if p.edad >= 20 && p.edad <= 30 && p.nombre[0] == letra
+        return p
+      end
+      act = act.siguiente
+    end
+    return nil
+  end
+
+  # 🔍 ejercicio07: Busca la primera persona cuya cédula termina en 7 o 9,
+  # cuyo nombre termina en vocal mayúscula, y cuyos ingresos están entre
+  # ingreso_min y ingreso_max. Retorna la persona o nil si no hay coincidencias.
+  def ejercicio07(ingreso_min : Int32, ingreso_max : Int32) : Persona?
+    act = cabeza
+    while act != nulo
+      p = act.info
+      cedula_str = p.cedula.to_s
+      nombre_str = p.nombre
+      if (cedula_str.ends_with?("7") || cedula_str.ends_with?("9")) &&
+         "AEIOU".includes?(nombre_str[-1]?) &&
+         p.ingresos >= ingreso_min && p.ingresos <= ingreso_max
+        return p
+      end
+      act = act.siguiente
+    end
+    return nil
+  end
+
 end
