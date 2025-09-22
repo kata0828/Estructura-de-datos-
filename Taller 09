@@ -1,0 +1,88 @@
+#  Taller 09
+# Módulos requeridos para trabajar con nodos
+require "dataclass"
+require "nodo"
+
+# Aquí se define la clase Producto
+require "producto"
+
+# Vamos a incluir la definición de la clase Producto
+include Eanlib::Data
+# Vamos a incluir los nodos de objetos de la clase Departamento
+include Eanlib::Nodo(Producto)
+
+# ---------------------------------------
+# La Dataclass Tienda: Una tienda vende
+# productos a las personas.
+# ---------------------------------------
+
+dataclass Tienda { act : Nodo(Producto) } do
+
+  def agregar_nodo_al_principio(producto : Producto) : Nodo(Producto)
+    nuevo_nodo = Nodo(Producto).new(producto)
+    if act == nulo
+      act = nuevo_nodo
+    else
+      nuevo_nodo.siguiente = act
+      act = nuevo_nodo
+    end
+    return act
+  end
+  def agregar_nodo_al_final(producto : Producto) : Nodo(Producto)
+    nuevo_nodo = Nodo(Producto).new(producto)
+
+    if act == nulo
+      act = nuevo_nodo
+    else
+      act = act
+      while act.siguiente != nulo
+        act = act.siguiente
+      end
+      act.siguiente = nuevo_nodo
+    end
+
+    return act
+  end
+  def agregar_nodo_en_posicion(posicion : Int32, producto : Producto)
+    if act == nulo || posicion == 0
+        agregar_nodo_al_principio(producto)
+    else
+        nodo = Nodo(Producto).new(producto)
+        actu = act
+        cont = 1
+
+        while cont < posicion && actu.siguiente != nulo
+        actu = actu.siguiente
+        cont += 1    end
+
+        nodo.siguiente = actu.siguiente
+        actu.siguiente = nodo
+    end
+  end
+
+  def eliminar_primer_nodo : Nil
+    if act != nulo
+      act = act.siguiente
+    end
+    return nil
+  end
+
+  # 📊 porcentaje_productos: Calcula el porcentaje de productos
+  # de color rojo o amarillo cuyo precio es menor al precio_max.
+  def porcentaje_productos(precio_max : Float64) : Float64
+    act = act
+    total = 0
+    c = 0
+
+    while act != nulo
+      k = act.info
+      if k.precio < precio_max && (k.rojo? || k.amarillo?)
+        cumple += 1
+      end
+      total += 1
+      act = act.siguiente
+    end
+
+    return total > 0 ? (cumple.to_f * 100.0 / total) : 0.0
+  end
+end
