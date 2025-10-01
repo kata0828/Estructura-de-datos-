@@ -1,0 +1,16 @@
+dataclass EscuelaPrimaria {nombre_escuela : String , cola_estudiantes : Cola(EstudiantePrimaria) } do 
+    def ejercicio00 : Int32
+        suma = 0
+        copia = cola_estudaintes.copiar
+        until copia.vacia?
+            e = copia.frente # saco el primer elemto de la copia 
+            if !e.nombre [0].in?("AEIOU") && #el nombre del estudiante lo empieza por vocal mayuscula 
+            (e.codigo % 10 == 3 || e.codigo %10 == 7) && # el codigo termine en 3 o 7
+            !(1500 <= e.codigo <= 3000) &&
+            e.color_cabello != "rojo" && e.color_cabello !="rubio"
+            suma += e.año_nacimiento # si todo eso es correcto se suma 
+        end 
+        copia.desencolar
+    end
+    return suma
+end 
