@@ -1,16 +1,144 @@
 dataclass EscuelaPrimaria {nombre_escuela : String , cola_estudiantes : Cola(EstudiantePrimaria) } do 
-    def ejercicio00 : Int32
-        suma = 0
-        copia = cola_estudaintes.copiar
-        until copia.vacia?
-            e = copia.frente # saco el primer elemto de la copia 
-            if !e.nombre [0].in?("AEIOU") && #el nombre del estudiante lo empieza por vocal mayuscula 
-            (e.codigo % 10 == 3 || e.codigo %10 == 7) && # el codigo termine en 3 o 7
-            !(1500 <= e.codigo <= 3000) &&
-            e.color_cabello != "rojo" && e.color_cabello !="rubio"
-            suma += e.año_nacimiento # si todo eso es correcto se suma 
-        end 
-        copia.desencolar
+
+  #  suma de años de nacimiento según múltiples condiciones
+  def ejercicio00 : Int32
+    suma = 0
+    copia = cola_estudiantes.copiar
+    until copia.vacia?
+      k = copia.frente
+      inicial = k.nombre[0]
+      if !inicial.in?("AEIOU") &&
+         (k.codigo % 10 == 3 || k.codigo % 10 == 7) &&
+         !(1500 <= k.codigo <= 3000) &&
+         k.color_cabello != "rojo" &&
+         k.color_cabello != "rubio"
+        suma += k.año_nacimiento
+      end
+      copia.desencolar
     end
     return suma
-end 
+  end
+
+  # porcentaje de niñas con ojos azules, no en quinto, grupo A o C
+  def ejercicio01 : Float64
+  total = 0
+  cont = 0                    
+  copia = cola_estudiantes.copiar
+  until copia.vacia?
+    k = copia.frente
+    total += 1               
+    if k.es_niña? &&
+       k.color_ojos == "azul" &&
+       k.curso != 5 &&
+       (k.grupo == "A" || k.grupo == "C")
+      cont += 1               
+    end
+    copia.desencolar
+  end
+  return total == 0 ? 0.0 : (cont * 100.0) / total
+  end
+
+  #  contar estudiantes de un curso específico
+  def ejercicio02(curso : Int32) : Int32
+    contador = 0
+    copia = cola_estudiantes.copiar
+    until copia.vacia?
+      e = copia.frente
+      if e.curso == curso
+        contador += 1
+      end
+      copia.desencolar
+    end
+    return contador
+  end
+
+  #  niño pelirrojo con menor código en curso dado, nacido en 2010–2019
+  def ejercicio03(curso : Int32) : String
+    copia = cola_estudiantes.copiar
+    menor_codigo = Int32::MAX
+    nombre = ""
+    until copia.vacia?
+      e = copia.frente
+      if e.curso == curso &&
+         e.es_niño? &&
+         e.color_cabello == "rojo" &&
+         (2010 <= e.año_nacimiento <= 2019)
+        if e.codigo < menor_codigo
+          menor_codigo = e.codigo
+          nombre = e.nombre
+        end
+      end
+      copia.desencolar
+    end
+    return menor_codigo == Int32::MAX ? "NO EXISTE" : nombre
+  end
+
+  #  buscar curso por código
+  def ejercicio04(codigo : Int32) : Int32
+    copia = cola_estudiantes.copiar
+    until copia.vacia?
+      e = copia.frente
+      if e.codigo == codigo
+        return e.curso
+      end
+      copia.desencolar
+    end
+    return -1
+  end
+
+  #  grupo con más niños en curso dado
+  def ejercicio05(curso : Int32) : String
+    a = 0; b = 0; c = 0
+    copia = cola_estudiantes.copiar
+    until copia.vacia?
+      e = copia.frente
+      if e.curso == curso && e.es_niño?
+        if e.grupo == "A"
+          a += 1
+        elsif e.grupo == "B"
+          b += 1
+        elsif e.grupo == "C"
+          c += 1
+        end
+      end
+      copia.desencolar
+    end
+    if a == b && b == c
+      return "EMPATE"
+    elsif a > b && a > c
+      return "A"
+    elsif b > a && b > c
+      return "B"
+    else
+      return "C"
+    end
+  end
+
+  # comparar promedio de edad entre niños y niñas por curso y color de ojos
+  def ejercicio06(curso : Int32, color : String) : Bool
+  suma_niños = 0; cont_niños = 0
+  suma_niñas = 0; cont_niñas = 0
+
+  copia = cola_estudiantes.copiar
+  until copia.vacia?
+    e = copia.frente
+    if e.curso == curso && e.color_ojos == color
+      if e.es_niño?
+        suma_niños += e.edad
+        cont_niños += 1
+      elsif e.es_niña?
+        suma_niñas += e.edad
+        cont_niñas += 1
+      end
+    end
+    copia.desencolar
+  end
+
+  prom_niños = cont_niños == 0 ? 0.0 : suma_niños.to_f / cont_niños
+  prom_niñas = cont_niñas == 0 ? 0.0 : suma_niñas.to_f / cont_niñas
+
+  return false if cont_niñas == 0
+
+  return prom_niños <= prom_niñas
+  end
+end
