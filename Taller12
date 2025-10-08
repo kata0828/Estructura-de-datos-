@@ -1,0 +1,109 @@
+# Módulos requeridos para trabajar con los archivos del taller
+#  Taller 12
+require "dataclass"
+require "cola"
+require "pila"
+
+# ----------------------------------------------------------------
+# Clase Taller12
+# ----------------------------------------------------------------
+class Taller12
+
+  # Este método permite saber si una expresión
+  # tiene los paréntesis balanceados o no.
+  def esta_balanceada?(cola : Cola(String)) : Bool
+    # Crear una pila vacía para los delimitadores
+    pila = Pila(String).new
+
+    # Crear una copia de la cola
+    copia = cola.copiar()
+
+    # Recorrer la cola mientras no esté vacía
+    until copia.vacia?
+      # Tomar el elemento al frente
+      elemento = copia.frente
+
+      # Si es delimitador de apertura
+      if elemento == "(" || elemento == "[" || elemento == "{"
+        pila.apilar(elemento)
+
+      # Si es delimitador de cierre
+      elsif elemento == ")" || elemento == "]" || elemento == "}"
+        # Si no hay nada en la pila → no hay pareja
+        return false if pila.vacia?
+
+        # Obtener el delimitador del tope
+        tope = pila.tope
+        pila.desapilar
+
+        # Verificar si no son pareja
+        pareja_incorrecta = (elemento == ")" && tope != "(") ||
+                            (elemento == "]" && tope != "[") ||
+                            (elemento == "}" && tope != "{")
+
+        return false if pareja_incorrecta
+      end
+
+      # Eliminar el elemento del frente de la copia
+      copia.desencolar
+    end
+
+    # Si la pila está vacía, está balanceada
+    return pila.vacia?
+  end
+
+
+  # Este método realiza la evaluación de una
+  # expresión en notación postfija
+  def evaluar_postfija(cola : Cola(String | Int32)) : Int32
+    # Crear una pila vacía de enteros
+    pila = Pila(Int32).new
+
+    # Crear una copia de la cola
+    copia = cola.copiar()
+
+    # Recorrer la cola mientras no esté vacía
+    until copia.vacia?
+      termino = copia.frente
+      copia.desencolar
+
+      # Si el término es un número, se apila
+      if termino.is_a?(Int32) || termino.to_s =~ /^\d+$/
+        pila.apilar(termino.to_i)
+
+      # Si es un operador, realizar la operación
+      else
+        # Sacar los dos operandos del tope (¡en orden inverso!)
+        num1 = pila.tope
+        pila.desapilar
+        num2 = pila.tope
+        pila.desapilar
+
+        resultado = case termino
+          when "+"
+            num2 + num1
+          when "-"
+            num2 - num1
+          when "*"
+            num2 * num1
+          when "/"
+            raise "División por cero" if num1 == 0
+            num2 // num1  # división entera
+          when "%"
+            raise "Módulo por cero" if num1 == 0
+            num2 % num1
+          else
+            raise "Operador no válido: #{termino}"
+        end
+
+        # Apilar el resultado
+        pila.apilar(resultado)
+      end
+    end
+
+    # Al final, el resultado está en el tope
+    return pila.tope
+  end
+
+
+end
